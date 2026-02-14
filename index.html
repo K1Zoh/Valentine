@@ -140,9 +140,7 @@
         0 12px 26px rgba(0,0,0,.15);
     }
     #yes:hover{ filter: brightness(1.05) saturate(1.35); }
-    #yes.glow{
-      animation: glow 1.1s ease-in-out infinite alternate;
-    }
+    #yes.glow{ animation: glow 1.1s ease-in-out infinite alternate; }
     @keyframes glow{
       from{ box-shadow: 0 16px 34px rgba(255, 47, 143, .22), 0 12px 26px rgba(0,0,0,.15); }
       to  { box-shadow: 0 20px 40px rgba(255, 47, 143, .38), 0 12px 26px rgba(0,0,0,.15); }
@@ -182,6 +180,7 @@
       background: rgba(30,0,18,.45);
       backdrop-filter: blur(7px);
       padding: 18px;
+      z-index: 20;
     }
     .overlay.show{ display:grid; }
     .modal{
@@ -218,7 +217,6 @@
       box-shadow: 0 18px 44px rgba(60,0,40,.18);
       background: rgba(255,255,255,.6);
     }
-
     .modal .btn{
       margin-top: 10px;
       background: linear-gradient(180deg, var(--accent), var(--accent2));
@@ -232,6 +230,28 @@
       from{ transform: translate(-110%, -50%) scale(var(--ys,1)) rotate(-1deg); }
       to  { transform: translate(-110%, -50%) scale(var(--ys,1)) rotate( 1deg); }
     }
+
+    /* pages */
+    .page{ display:none; }
+    .page.active{ display:block; }
+
+    /* petit fade */
+    .fade-in{ animation: fadeIn .25s ease-out both; }
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(6px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* bouton primaire (page 1) */
+    .primary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color:#fff;
+      border: 3px solid rgba(255,255,255,.9);
+      text-shadow: 0 1px 0 rgba(0,0,0,.12);
+      box-shadow:
+        0 16px 34px rgba(255, 47, 143, .25),
+        0 12px 26px rgba(0,0,0,.15);
+    }
   </style>
 </head>
 
@@ -243,37 +263,55 @@
     <div class="card">
       <div class="sparkle" aria-hidden="true"></div>
 
-      <h1>💘 Lucie… 💘</h1>
-      <p class="sub">J’ai une question ultra sérieuse. (Oui, moi aussi je sais faire des trucs kitsch…)</p>
+      <!-- PAGE 1 -->
+      <div class="page active fade-in" id="pageIntro">
+        <h1>💘 Lucie… 💘</h1>
+        <p class="sub">Aujourd’hui c’est un jour spécial, du coup j’ai besoin de ton avis…</p>
 
-      <div class="question">
-        <span class="badge">La fameuse</span>
-        <span>Tu veux être ma Valentine ?</span>
+        <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <button class="btn primary" id="btnDiscover" type="button">Découvrir la question ✨</button>
+          <span class="pill">Promis c’est (presque) sérieux 😌</span>
+        </div>
+
+        <div class="footer" style="margin-top:16px;">
+          <span class="pill">💌 Clique… et prépare-toi</span>
+        </div>
       </div>
 
-      <div class="arena" id="arena">
-        <button class="btn" id="yes" type="button">OUI 💖</button>
-        <button class="btn" id="no" type="button">NON 🙃</button>
+      <!-- PAGE 2 -->
+      <div class="page" id="pageQuestion">
+        <h1>💘 Lucie… 💘</h1>
+        <p class="sub">J’ai une question ultra sérieuse. (Oui, je sais faire des trucs kitsch… et j’assume.)</p>
+
+        <div class="question">
+          <span class="badge">La fameuse</span>
+          <span>Tu veux être ma Valentine ?</span>
+        </div>
+
+        <div class="arena" id="arena">
+          <button class="btn" id="yes" type="button">OUI 💖</button>
+          <button class="btn" id="no" type="button">NON 🙃</button>
+        </div>
+
+        <div class="footer">
+          <span class="pill">✨ Essaie “NON”… si tu y arrives 😌</span>
+          <span class="pill">💌 100% LOVE (et un peu de triche)</span>
+        </div>
       </div>
 
-      <div class="footer">
-        <span class="pill">✨ Essaie “NON”… si tu y arrives 😌</span>
-        <span class="pill">💌 100% LOVE, 0% de triche</span>
-      </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="okTitle">
     <div class="modal">
-      <h2 id="okTitle">Donc c'est un OUI !!! 💞</h2>
-      <p>Ok c’est officiel : je suis joie. Mon coeur est presque autant remplie d'amour que tes bras sont remplis de muscles 🥹</p>
+      <h2 id="okTitle">Lucie, c’est OUI alors !!! 💞</h2>
+      <p>Ok c’est officiel : tu viens de me rendre ridiculement heureux 🥹</p>
 
       <div class="gifBox">
-        <!-- Mets un fichier happy.gif à la racine du repo -->
         <img id="happyGif" alt="Happy dance" />
       </div>
 
-      <p class="small">Sois prete a me supporter maintenant 💖.</p>
+      <p class="small">Maintenant envoie-moi un ❤️ (ou un “j’ai dit oui”).</p>
       <button class="btn" type="button" id="close">🥰</button>
     </div>
   </div>
@@ -281,6 +319,19 @@
   <script>
     // -------- helpers
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    // -------- pages
+    const pageIntro = document.getElementById('pageIntro');
+    const pageQuestion = document.getElementById('pageQuestion');
+    const btnDiscover = document.getElementById('btnDiscover');
+
+    function showQuestion(){
+      pageIntro.classList.remove('active');
+      pageQuestion.classList.add('active','fade-in');
+      // petit focus accessibilité
+      setTimeout(() => document.getElementById('yes').focus(), 60);
+    }
+    btnDiscover.addEventListener('click', showQuestion);
 
     // -------- coeurs flottants
     const hearts = document.getElementById('hearts');
@@ -303,20 +354,17 @@
     for(let i=0;i<18;i++) makeHeart();
     setInterval(makeHeart, 420);
 
-    // -------- éléments
+    // -------- éléments (page 2)
     const arena = document.getElementById('arena');
     const btnNo = document.getElementById('no');
     const btnYes = document.getElementById('yes');
     const overlay = document.getElementById('overlay');
     const close = document.getElementById('close');
 
-    // -------- GIF (mets happy.gif à la racine du repo)
+    // -------- GIF
     const happyGif = document.getElementById('happyGif');
     happyGif.src = "./happy.gif";
-    happyGif.onerror = () => {
-      // fallback si pas de fichier
-      happyGif.style.display = "none";
-    };
+    happyGif.onerror = () => { happyGif.style.display = "none"; };
 
     // -------- confettis coeurs (canvas)
     const confetti = document.getElementById('confetti');
@@ -332,7 +380,7 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    function spawnConfetti(count=170){
+    function spawnConfetti(count=190){
       particles = [];
       const w = window.innerWidth, h = window.innerHeight;
       for(let i=0;i<count;i++){
@@ -414,12 +462,9 @@
     function dodge() {
       dodgeCount++;
 
-      // NON rétrécit de plus en plus (jusqu'à ridicule)
       noScale = clamp(noScale - (0.08 + dodgeCount * 0.02), 0.18, 1);
 
-      // OUI grossit de plus en plus vite (accélération)
       yesScale = clamp(Math.pow(1.18, dodgeCount), 1, 5.5);
-
       btnYes.style.setProperty('--ys', yesScale.toFixed(2));
       btnYes.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
 
@@ -429,19 +474,21 @@
       placeNoRandomly();
     }
 
-    // desktop: approche / survol
-    btnNo.addEventListener('mouseenter', dodge);
+    // "NON" actif seulement quand la page question est affichée
+    function enableNoDodge(){
+      btnNo.addEventListener('mouseenter', dodge);
+      btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
+      btnNo.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+    }
 
-    // mobile: tentative de tap
-    btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
-    btnNo.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+    enableNoDodge();
 
     // clic sur OUI => modale + confettis + coeurs
     btnYes.addEventListener('click', () => {
       overlay.classList.add('show');
 
       confetti.classList.add('show');
-      spawnConfetti(190);
+      spawnConfetti(210);
       if(!animId) confettiLoop();
 
       for(let i=0;i<14;i++) setTimeout(makeHeart, i*70);
