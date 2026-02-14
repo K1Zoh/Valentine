@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💘 Saint Valentin 💘</title>
+  <style>
+    :root{
+      --bg1:#ff9acb;
+      --bg2:#ff4fa3;
+      --card:#fff7fb;
+      --text:#3b0a2a;
+      --shadow: 0 18px 60px rgba(60, 0, 40, .25);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, #fff 0%, rgba(255,255,255,0) 60%),
+        radial-gradient(800px 500px at 90% 30%, #ffd1e8 0%, rgba(255,255,255,0) 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* coeurs flottants */
+    .hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.35;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+    }
+    .heart{
+      position:absolute;
+      font-size: clamp(18px, 2.2vw, 34px);
+      animation: floatUp linear infinite;
+      user-select:none;
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%{ opacity: 1; }
+      to{ transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+
+    .wrap{
+      width:min(780px, 92vw);
+      padding: 18px;
+    }
+    .card{
+      background: linear-gradient(180deg, var(--card), #ffe7f4);
+      border: 3px solid rgba(255,255,255,.75);
+      border-radius: 28px;
+      padding: clamp(18px, 3.2vw, 34px);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .sparkle{
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.7) 0 6px, transparent 7px),
+        radial-gradient(circle at 70% 20%, rgba(255,255,255,.55) 0 5px, transparent 6px),
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,.55) 0 5px, transparent 6px),
+        radial-gradient(circle at 85% 70%, rgba(255,255,255,.6) 0 6px, transparent 7px);
+      transform: rotate(12deg);
+      opacity:.35;
+      pointer-events:none;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 4.2vw, 46px);
+      line-height:1.05;
+      letter-spacing:.2px;
+      text-shadow: 0 2px 0 rgba(255,255,255,.7);
+    }
+    .sub{
+      margin: 0 0 22px;
+      font-size: clamp(14px, 2.1vw, 18px);
+      opacity:.85;
+    }
+
+    .question{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      margin: 12px 0 22px;
+      font-size: clamp(18px, 2.6vw, 24px);
+      font-weight: 700;
+    }
+    .question .badge{
+      background: rgba(255,255,255,.75);
+      border: 2px dashed rgba(255, 79, 163, .55);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .arena{
+      position:relative;
+      height: clamp(170px, 28vw, 240px);
+      border-radius: 22px;
+      background: rgba(255,255,255,.55);
+      border: 2px solid rgba(255,255,255,.8);
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.25);
+      overflow:hidden;
+    }
+
+    .btn{
+      border:0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 900;
+      cursor:pointer;
+      letter-spacing:.4px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    #yes{
+      position:absolute;
+      left: 50%;
+      top: 56%;
+      transform: translate(-110%, -50%);
+      background: linear-gradient(180deg, #ff2f8f, #ff7cc1);
+      color:white;
+      text-shadow: 0 1px 0 rgba(0,0,0,.15);
+      border: 3px solid rgba(255,255,255,.85);
+      filter: saturate(1.2);
+    }
+    #yes:hover{ filter: brightness(1.05) saturate(1.35); }
+
+    #no{
+      position:absolute;
+      left: 50%;
+      top: 56%;
+      transform: translate(10%, -50%);
+      background: linear-gradient(180deg, #fff, #ffe7f4);
+      color: #a30050;
+      border: 3px solid rgba(255, 79, 163, .35);
+    }
+
+    .footer{
+      margin-top: 16px;
+      font-size: 13px;
+      opacity:.75;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background: rgba(255,255,255,.6);
+      border: 1px solid rgba(255,255,255,.8);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    /* écran "oui" */
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(30,0,18,.45);
+      backdrop-filter: blur(6px);
+      padding: 18px;
+    }
+    .overlay.show{ display:grid; }
+    .modal{
+      width:min(720px, 92vw);
+      background: linear-gradient(180deg, #fff, #ffe6f3);
+      border-radius: 26px;
+      border: 3px solid rgba(255,255,255,.85);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      text-align:center;
+    }
+    .modal h2{
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3.6vw, 40px);
+    }
+    .modal p{
+      margin: 0 0 14px;
+      font-size: clamp(14px, 2.2vw, 18px);
+      opacity:.9;
+    }
+    .modal .small{
+      font-size: 13px;
+      opacity:.8;
+    }
+    .modal .btn{
+      margin-top: 10px;
+      background: linear-gradient(180deg, #ff2f8f, #ff7cc1);
+      color:#fff;
+      border: 3px solid rgba(255,255,255,.85);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hearts" aria-hidden="true" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="sparkle" aria-hidden="true"></div>
+
+      <h1>💘 Coucou toi… 💘</h1>
+      <p class="sub">J’ai une question ultra sérieuse (et un peu kitsch, donc parfaite).</p>
+
+      <div class="question">
+        <span class="badge">Question</span>
+        <span>Tu veux être ma Valentine ?</span>
+      </div>
+
+      <div class="arena" id="arena">
+        <button class="btn" id="yes" type="button">OUI 💖</button>
+        <button class="btn" id="no" type="button">NON 🙃</button>
+      </div>
+
+      <div class="footer">
+        <span class="pill">✨ Astuce : essaie de cliquer “NON”…</span>
+        <span class="pill">💌 (promis, c’est de l’amour, pas un piège)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="okTitle">
+    <div class="modal">
+      <h2 id="okTitle">YEEEEES !!! 💞💞💞</h2>
+      <p>Ok c’est officiel : tu viens de me rendre incroyablement heureux(se) 🥹</p>
+      <p class="small">Maintenant envoie-moi un message avec un ❤️ (ou un “j’ai dit oui”).</p>
+      <button class="btn" type="button" id="close">🥰</button>
+    </div>
+  </div>
+
+  <script>
+    // --- coeurs flottants
+    const hearts = document.getElementById('hearts');
+    const heartChars = ["💖","💘","💝","💗","💕","💞","❤️","🌹","✨"];
+    const makeHeart = () => {
+      const s = document.createElement('div');
+      s.className = 'heart';
+      s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      const left = Math.random()*100;
+      const dur = 6 + Math.random()*10;
+      const delay = Math.random()*2;
+      const size = 0.85 + Math.random()*1.35;
+      s.style.left = left + 'vw';
+      s.style.animationDuration = dur + 's';
+      s.style.animationDelay = delay + 's';
+      s.style.transform = `translateY(110vh) rotate(${Math.random()*180}deg) scale(${size})`;
+      hearts.appendChild(s);
+      setTimeout(() => s.remove(), (dur + delay) * 1000);
+    };
+    for(let i=0;i<18;i++) makeHeart();
+    setInterval(makeHeart, 420);
+
+    // --- logique boutons
+    const arena = document.getElementById('arena');
+    const btnNo = document.getElementById('no');
+    const btnYes = document.getElementById('yes');
+    const overlay = document.getElementById('overlay');
+    const close = document.getElementById('close');
+
+    let yesScale = 1;
+    let noScale = 1;
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function placeNoRandomly() {
+      const a = arena.getBoundingClientRect();
+
+      // tailles actuelles
+      const noRect = btnNo.getBoundingClientRect();
+
+      // marges pour rester dans l'arène
+      const pad = 10;
+      const maxX = a.width - noRect.width - pad*2;
+      const maxY = a.height - noRect.height - pad*2;
+
+      const x = pad + Math.random() * Math.max(0, maxX);
+      const y = pad + Math.random() * Math.max(0, maxY);
+
+      btnNo.style.left = x + 'px';
+      btnNo.style.top  = y + 'px';
+      btnNo.style.transform = 'translate(0,0)';
+    }
+
+    function dodge() {
+      // le "non" bouge + rétrécit progressivement
+      noScale = clamp(noScale - 0.08, 0.55, 1);
+      btnNo.style.transform = `translate(0,0) scale(${noScale})`;
+
+      // le "oui" grossit progressivement
+      yesScale = clamp(yesScale + 0.10, 1, 1.9);
+      btnYes.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
+
+      placeNoRandomly();
+    }
+
+    // desktop: dès qu'on s'approche / survole
+    btnNo.addEventListener('mouseenter', dodge);
+
+    // mobile: au toucher / tentative de tap
+    btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
+    btnNo.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+
+    // clic sur oui => victoire
+    btnYes.addEventListener('click', () => {
+      overlay.classList.add('show');
+      // feu d'artifice de coeurs
+      for(let i=0;i<12;i++) setTimeout(makeHeart, i*70);
+    });
+
+    close.addEventListener('click', () => overlay.classList.remove('show'));
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) overlay.classList.remove('show');
+    });
+
+    // initial placement "non" pour que ce soit stable sur tous écrans
+    // (on force le positionnement absolu en pixels après layout)
+    window.addEventListener('load', () => {
+      // on met des positions explicites
+      btnNo.style.left = '55%';
+      btnNo.style.top  = '56%';
+      btnNo.style.transform = 'translate(10%, -50%)';
+      // puis on repasse en mode "arène" px au premier dodge
+      // pour que le random fonctionne correctement
+      const firstDodge = () => {
+        // fixe l'origine en px
+        const a = arena.getBoundingClientRect();
+        const nr = btnNo.getBoundingClientRect();
+        btnNo.style.left = (nr.left - a.left) + 'px';
+        btnNo.style.top  = (nr.top - a.top) + 'px';
+        btnNo.style.transform = 'translate(0,0) scale(1)';
+        btnNo.removeEventListener('mouseenter', firstDodge);
+        btnNo.removeEventListener('touchstart', firstDodge);
+      };
+      btnNo.addEventListener('mouseenter', firstDodge);
+      btnNo.addEventListener('touchstart', firstDodge, {passive:true});
+    });
+  </script>
+</body>
+</html>
