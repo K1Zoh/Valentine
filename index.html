@@ -2,251 +2,474 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" />
-  <title>💘 Pour Lucie... 💘</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💘 Lucie… j’ai une question 💘</title>
 
   <style>
-    :root {
-      --bg1: #ff9acb;
-      --bg2: #ff4fa3;
-      --card: #ffffff;
-      --text: #3b0a2a;
-      --accent: #ff2f8f;
-      --accent2: #ff7cc1;
-      --shadow: 0 20px 50px rgba(255, 47, 143, 0.3);
+    :root{
+      --bg1:#ff9acb;
+      --bg2:#ff4fa3;
+      --card:#fff7fb;
+      --text:#3b0a2a;
+      --shadow: 0 18px 60px rgba(60, 0, 40, .25);
+      --accent:#ff2f8f;
+      --accent2:#ff7cc1;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, #fff 0%, rgba(255,255,255,0) 60%),
+        radial-gradient(800px 500px at 90% 30%, #ffd1e8 0%, rgba(255,255,255,0) 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      color: var(--text);
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      overflow: hidden;
-      perspective: 1000px;
+    /* coeurs flottants */
+    .hearts{ position:fixed; inset:0; pointer-events:none; opacity:.35; filter: drop-shadow(0 10px 18px rgba(0,0,0,.12)); }
+    .heart{ position:absolute; font-size: clamp(18px, 2.2vw, 34px); animation: floatUp linear infinite; user-select:none; will-change: transform, opacity; }
+    @keyframes floatUp{
+      from{ transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%{ opacity: 1; }
+      to{ transform: translateY(-20vh) rotate(360deg); opacity: 0; }
     }
 
-    /* Fond animé */
-    .bg-blobs {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      filter: blur(60px);
-      opacity: 0.6;
+    /* confettis coeurs */
+    canvas#confetti{
+      position:fixed; inset:0;
+      pointer-events:none;
+      display:none;
     }
+    canvas#confetti.show{ display:block; }
 
-    /* Coeurs flottants */
-    .heart-particle {
-      position: absolute;
-      pointer-events: none;
-      animation: floatUp linear forwards;
-      z-index: 10;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-100vh) scale(1.5) rotate(360deg); opacity: 0; }
-    }
-
-    /* Conteneur */
-    .wrap { width: min(500px, 92vw); position: relative; z-index: 2; }
-
-    .card {
-      background: var(--card);
-      border-radius: 40px;
-      padding: 40px 25px;
-      box-shadow: var(--shadow);
-      text-align: center;
-      border: 4px solid rgba(255, 255, 255, 0.8);
-      transition: transform 0.3s ease;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 8vw, 3rem);
-      margin: 0;
-      background: linear-gradient(to right, #ff2f8f, #ff7cc1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .sub { font-size: 1.1rem; opacity: 0.8; margin-top: 10px; }
-
-    /* Zone de jeu */
-    .arena {
-      position: relative;
-      height: 300px;
-      margin-top: 30px;
-      background: rgba(255, 240, 248, 0.5);
+    .wrap{ width:min(820px, 92vw); padding: 18px; }
+    .card{
+      background: linear-gradient(180deg, var(--card), #ffe7f4);
+      border: 3px solid rgba(255,255,255,.75);
       border-radius: 30px;
-      overflow: hidden; /* Important pour ne pas que le bouton sorte de la carte */
+      padding: clamp(18px, 3.2vw, 36px);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      transform: translateZ(0);
+    }
+    .sparkle{
+      position:absolute; inset:-40%;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255,255,255,.75) 0 7px, transparent 8px),
+        radial-gradient(circle at 72% 18%, rgba(255,255,255,.55) 0 6px, transparent 7px),
+        radial-gradient(circle at 40% 72%, rgba(255,255,255,.55) 0 6px, transparent 7px),
+        radial-gradient(circle at 86% 72%, rgba(255,255,255,.65) 0 7px, transparent 8px);
+      transform: rotate(12deg);
+      opacity:.35;
+      pointer-events:none;
     }
 
-    .btn {
-      position: absolute;
-      border: none;
-      padding: 16px 32px;
-      font-size: 1.2rem;
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 4.2vw, 48px);
+      line-height:1.02;
+      letter-spacing:.2px;
+      text-shadow: 0 2px 0 rgba(255,255,255,.75);
+    }
+    .sub{
+      margin: 0 0 18px;
+      font-size: clamp(14px, 2.1vw, 18px);
+      opacity:.9;
+    }
+
+    .question{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      margin: 10px 0 18px;
+      font-size: clamp(18px, 2.6vw, 24px);
       font-weight: 900;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .badge{
+      background: rgba(255,255,255,.8);
+      border: 2px dashed rgba(255, 79, 163, .55);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 950;
+      white-space:nowrap;
     }
 
-    #yes {
-      z-index: 100;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      box-shadow: 0 10px 20px rgba(255, 47, 143, 0.4);
+    .arena{
+      position:relative;
+      height: clamp(175px, 28vw, 250px);
+      border-radius: 24px;
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(255,255,255,.85);
+      box-shadow: inset 0 0 0 7px rgba(255,255,255,.25);
+      overflow:hidden;
+    }
+
+    .btn{
+      border:0;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-weight: 950;
+      cursor:pointer;
+      letter-spacing:.4px;
+      box-shadow: 0 12px 26px rgba(0,0,0,.18);
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      user-select:none;
+      touch-action: manipulation;
+      will-change: transform;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    #yes{
+      position:absolute;
       left: 50%;
-      top: 40%;
-      transform: translate(-50%, -50%);
+      top: 56%;
+      transform: translate(-110%, -50%);
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color:white;
+      text-shadow: 0 1px 0 rgba(0,0,0,.15);
+      border: 3px solid rgba(255,255,255,.9);
+      filter: saturate(1.2);
+      box-shadow:
+        0 16px 34px rgba(255, 47, 143, .25),
+        0 12px 26px rgba(0,0,0,.15);
+    }
+    #yes:hover{ filter: brightness(1.05) saturate(1.35); }
+    #yes.glow{
+      animation: glow 1.1s ease-in-out infinite alternate;
+    }
+    @keyframes glow{
+      from{ box-shadow: 0 16px 34px rgba(255, 47, 143, .22), 0 12px 26px rgba(0,0,0,.15); }
+      to  { box-shadow: 0 20px 40px rgba(255, 47, 143, .38), 0 12px 26px rgba(0,0,0,.15); }
     }
 
-    #no {
-      z-index: 90;
-      background: #eee;
-      color: #666;
+    #no{
+      position:absolute;
       left: 50%;
-      top: 70%;
-      transform: translate(-50%, -50%);
-      white-space: nowrap;
+      top: 56%;
+      transform: translate(10%, -50%);
+      background: linear-gradient(180deg, #fff, #ffe7f4);
+      color: #a30050;
+      border: 3px solid rgba(255, 79, 163, .35);
     }
 
-    /* Overlay Victoire */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      display: none;
-      place-items: center;
-      z-index: 1000;
+    .footer{
+      margin-top: 14px;
+      font-size: 13px;
+      opacity:.78;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.85);
+      padding: 6px 10px;
+      border-radius: 999px;
     }
 
-    .modal {
-      background: white;
-      padding: 40px;
-      border-radius: 40px;
-      text-align: center;
-      max-width: 90%;
-      animation: popIn 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+    /* écran "oui" */
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(30,0,18,.45);
+      backdrop-filter: blur(7px);
+      padding: 18px;
+    }
+    .overlay.show{ display:grid; }
+    .modal{
+      width:min(760px, 92vw);
+      background: linear-gradient(180deg, #fff, #ffe6f3);
+      border-radius: 28px;
+      border: 3px solid rgba(255,255,255,.9);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .modal h2{
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3.8vw, 42px);
+    }
+    .modal p{
+      margin: 0 0 12px;
+      font-size: clamp(14px, 2.2vw, 18px);
+      opacity:.92;
+    }
+    .modal .small{ font-size: 13px; opacity:.82; }
+
+    .gifBox{
+      display:grid;
+      place-items:center;
+      margin: 14px 0 6px;
+    }
+    .gifBox img{
+      width: min(380px, 75vw);
+      border-radius: 22px;
+      border: 3px solid rgba(255, 79, 163, .25);
+      box-shadow: 0 18px 44px rgba(60,0,40,.18);
+      background: rgba(255,255,255,.6);
     }
 
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
+    .modal .btn{
+      margin-top: 10px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color:#fff;
+      border: 3px solid rgba(255,255,255,.9);
     }
 
-    canvas#confetti {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1100;
+    /* secousse du OUI quand ça chauffe */
+    .wiggle{ animation: wiggle .22s ease-in-out infinite alternate; }
+    @keyframes wiggle{
+      from{ transform: translate(-110%, -50%) scale(var(--ys,1)) rotate(-1deg); }
+      to  { transform: translate(-110%, -50%) scale(var(--ys,1)) rotate( 1deg); }
     }
   </style>
 </head>
-<body>
 
+<body>
   <canvas id="confetti"></canvas>
+  <div class="hearts" aria-hidden="true" id="hearts"></div>
 
   <div class="wrap">
     <div class="card">
-      <h1>Lucie... 💞</h1>
-      <p class="sub">J'ai un petit truc à te demander.</p>
-      
+      <div class="sparkle" aria-hidden="true"></div>
+
+      <h1>💘 Lucie… 💘</h1>
+      <p class="sub">J’ai une question ultra sérieuse. (Oui, je sais faire des trucs kitsch… et j’assume.)</p>
+
+      <div class="question">
+        <span class="badge">La fameuse</span>
+        <span>Tu veux être ma Valentine ?</span>
+      </div>
+
       <div class="arena" id="arena">
-        <button id="yes" class="btn">OUI ! ✨</button>
-        <button id="no" class="btn">Non 🙃</button>
+        <button class="btn" id="yes" type="button">OUI 💖</button>
+        <button class="btn" id="no" type="button">NON 🙃</button>
+      </div>
+
+      <div class="footer">
+        <span class="pill">✨ Essaie “NON”… si tu y arrives 😌</span>
+        <span class="pill">💌 100% LOVE (et un peu de triche)</span>
       </div>
     </div>
   </div>
 
-  <div class="overlay" id="overlay">
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="okTitle">
     <div class="modal">
-      <h2>Gagné ! 😍</h2>
-      <p>Prépare-toi, ça va être génial.</p>
-      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp6eXp6eXp6eXp6eXp6eXp6eXp6eXp6eXp6eXp6eXp6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41lH4ADRtAYnGsLe/giphy.gif" width="200" style="border-radius:20px">
-      <br><br>
-      <button class="btn" onclick="location.reload()" style="position:static; background: #eee;">Recommencer ?</button>
+      <h2 id="okTitle">Lucie, c’est OUI alors !!! 💞</h2>
+      <p>Ok c’est officiel : tu viens de me rendre ridiculement heureux 🥹</p>
+
+      <div class="gifBox">
+        <!-- Mets un fichier happy.gif à la racine du repo -->
+        <img id="happyGif" alt="Happy dance" />
+      </div>
+
+      <p class="small">Maintenant envoie-moi un ❤️ (ou un “j’ai dit oui”).</p>
+      <button class="btn" type="button" id="close">🥰</button>
     </div>
   </div>
 
   <script>
+    // -------- helpers
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    // -------- coeurs flottants
+    const hearts = document.getElementById('hearts');
+    const heartChars = ["💖","💘","💝","💗","💕","💞","❤️","🌹","✨"];
+    const makeHeart = () => {
+      const s = document.createElement('div');
+      s.className = 'heart';
+      s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      const left = Math.random()*100;
+      const dur = 6 + Math.random()*10;
+      const delay = Math.random()*2;
+      const size = 0.85 + Math.random()*1.35;
+      s.style.left = left + 'vw';
+      s.style.animationDuration = dur + 's';
+      s.style.animationDelay = delay + 's';
+      s.style.transform = `translateY(110vh) rotate(${Math.random()*180}deg) scale(${size})`;
+      hearts.appendChild(s);
+      setTimeout(() => s.remove(), (dur + delay) * 1000);
+    };
+    for(let i=0;i<18;i++) makeHeart();
+    setInterval(makeHeart, 420);
+
+    // -------- éléments
+    const arena = document.getElementById('arena');
     const btnNo = document.getElementById('no');
     const btnYes = document.getElementById('yes');
-    const arena = document.getElementById('arena');
     const overlay = document.getElementById('overlay');
-    
-    let scaleYes = 1;
-    let noHits = 0;
+    const close = document.getElementById('close');
 
-    // --- Logique d'esquive améliorée ---
-    const moveNo = () => {
-      noHits++;
-      
-      // On réduit le bouton NON
-      const newScale = Math.max(0.5, 1 - noHits * 0.1);
-      
-      // On agrandit le bouton OUI (exponentiel)
-      scaleYes += 0.4;
-      btnYes.style.transform = `translate(-50%, -50%) scale(${scaleYes})`;
-
-      // Calcul d'une position qui n'est pas sous le curseur
-      const rectArena = arena.getBoundingClientRect();
-      const rectNo = btnNo.getBoundingClientRect();
-
-      const padding = 20;
-      const x = Math.random() * (rectArena.width - rectNo.width - padding * 2) + padding;
-      const y = Math.random() * (rectArena.height - rectNo.height - padding * 2) + padding;
-
-      btnNo.style.left = `${x}px`;
-      btnNo.style.top = `${y}px`;
-      btnNo.style.transform = `scale(${newScale})`;
-      btnNo.style.position = 'absolute';
+    // -------- GIF (mets happy.gif à la racine du repo)
+    const happyGif = document.getElementById('happyGif');
+    happyGif.src = "./happy.gif";
+    happyGif.onerror = () => {
+      // fallback si pas de fichier
+      happyGif.style.display = "none";
     };
 
-    btnNo.addEventListener('mouseover', moveNo);
-    btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
+    // -------- confettis coeurs (canvas)
+    const confetti = document.getElementById('confetti');
+    const ctx = confetti.getContext('2d');
+    let particles = [];
+    let animId = null;
 
-    // --- Victoire ---
+    function resizeCanvas(){
+      confetti.width = window.innerWidth * devicePixelRatio;
+      confetti.height = window.innerHeight * devicePixelRatio;
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function spawnConfetti(count=170){
+      particles = [];
+      const w = window.innerWidth, h = window.innerHeight;
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: -20 - Math.random()*h*0.2,
+          vx: (Math.random()-0.5)*2.8,
+          vy: 2.4 + Math.random()*4.6,
+          r: 10 + Math.random()*20,
+          rot: Math.random()*Math.PI*2,
+          vr: (Math.random()-0.5)*0.22,
+          a: 1
+        });
+      }
+    }
+
+    function drawHeart(x,y,size,rot){
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.rotate(rot);
+      ctx.scale(size/30, size/30);
+      ctx.beginPath();
+      ctx.moveTo(0, 10);
+      ctx.bezierCurveTo(0, -10, -30, -10, -30, 10);
+      ctx.bezierCurveTo(-30, 30, 0, 40, 0, 55);
+      ctx.bezierCurveTo(0, 40, 30, 30, 30, 10);
+      ctx.bezierCurveTo(30, -10, 0, -10, 0, 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function confettiLoop(){
+      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+
+      for(const p of particles){
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.a -= 0.004;
+
+        ctx.globalAlpha = Math.max(0, p.a);
+        ctx.fillStyle = (Math.random() > 0.5) ? "rgba(255,47,143,0.92)" : "rgba(255,124,193,0.92)";
+        drawHeart(p.x, p.y, p.r, p.rot);
+      }
+      ctx.globalAlpha = 1;
+
+      particles = particles.filter(p => p.a > 0 && p.y < window.innerHeight + 80);
+      if(particles.length){
+        animId = requestAnimationFrame(confettiLoop);
+      }else{
+        confetti.classList.remove('show');
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    }
+
+    // -------- logique "NON" qui fuit + "OUI" qui abuse
+    let yesScale = 1;
+    let noScale = 1;
+    let dodgeCount = 0;
+
+    function placeNoRandomly() {
+      const a = arena.getBoundingClientRect();
+      const noRect = btnNo.getBoundingClientRect();
+
+      const pad = 10;
+      const maxX = a.width - noRect.width - pad*2;
+      const maxY = a.height - noRect.height - pad*2;
+
+      const x = pad + Math.random() * Math.max(0, maxX);
+      const y = pad + Math.random() * Math.max(0, maxY);
+
+      btnNo.style.left = x + 'px';
+      btnNo.style.top  = y + 'px';
+      btnNo.style.transform = `translate(0,0) scale(${noScale})`;
+    }
+
+    function dodge() {
+      dodgeCount++;
+
+      // NON rétrécit de plus en plus (jusqu'à ridicule)
+      noScale = clamp(noScale - (0.08 + dodgeCount * 0.02), 0.18, 1);
+
+      // OUI grossit de plus en plus vite (accélération)
+      yesScale = clamp(Math.pow(1.18, dodgeCount), 1, 5.5);
+
+      btnYes.style.setProperty('--ys', yesScale.toFixed(2));
+      btnYes.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
+
+      btnYes.classList.add('glow');
+      if (yesScale > 1.6) btnYes.classList.add('wiggle');
+
+      placeNoRandomly();
+    }
+
+    // desktop: approche / survol
+    btnNo.addEventListener('mouseenter', dodge);
+
+    // mobile: tentative de tap
+    btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
+    btnNo.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+
+    // clic sur OUI => modale + confettis + coeurs
     btnYes.addEventListener('click', () => {
-      overlay.style.display = 'grid';
-      startConfetti();
+      overlay.classList.add('show');
+
+      confetti.classList.add('show');
+      spawnConfetti(190);
+      if(!animId) confettiLoop();
+
+      for(let i=0;i<14;i++) setTimeout(makeHeart, i*70);
     });
 
-    // --- Système de confettis simplifié et performant ---
-    function startConfetti() {
-      const canvas = document.getElementById('confetti');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    close.addEventListener('click', () => overlay.classList.remove('show'));
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) overlay.classList.remove('show');
+    });
 
-      const particles = Array.from({ length: 100 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        size: Math.random() * 10 + 5,
-        color: `hsl(${Math.random() * 30 + 330}, 100%, 70%)`,
-        speed: Math.random() * 3 + 2
-      }));
+    // stabilise le "NON" et passe en px au premier dodge
+    window.addEventListener('load', () => {
+      btnNo.style.left = '55%';
+      btnNo.style.top  = '56%';
+      btnNo.style.transform = 'translate(10%, -50%)';
 
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.y += p.speed;
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          if (p.y > canvas.height) p.y = -20;
-        });
-        requestAnimationFrame(draw);
-      }
-      draw();
-    }
+      const firstDodge = () => {
+        const a = arena.getBoundingClientRect();
+        const nr = btnNo.getBoundingClientRect();
+        btnNo.style.left = (nr.left - a.left) + 'px';
+        btnNo.style.top  = (nr.top - a.top) + 'px';
+        btnNo.style.transform = `translate(0,0) scale(${noScale})`;
+        btnNo.removeEventListener('mouseenter', firstDodge);
+        btnNo.removeEventListener('touchstart', firstDodge);
+      };
+      btnNo.addEventListener('mouseenter', firstDodge);
+      btnNo.addEventListener('touchstart', firstDodge, {passive:true});
+    });
   </script>
 </body>
 </html>
